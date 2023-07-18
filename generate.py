@@ -11,6 +11,14 @@ from fairseq import checkpoint_utils, options, progress_bar, tasks, utils
 import json
 import os
 
+from time import sleep
+# from glob import glob
+
+# there are some timing issues when loading the initial checkpoint
+# we'll allow up to 10 retries before exiting
+MAX_RELOAD_TRIES = 10
+WAIT_BETWEEN_RELOAD_TRIES = 120/MAX_RELOAD_TRIES # wait up to 2 minutes total
+
 def main(args):
     assert args.path is not None, '--path required for generation!'
     args.beam = args.nbest = 1
@@ -25,12 +33,31 @@ def main(args):
 
     src_dict = getattr(task, 'source_dictionary', None)
     tgt_dict = task.target_dictionary
+    
+    n_tries = 0
+    while n_tries < MAX_RELOAD_TRIES:
+        try:
+            models, _model_args = checkpoint_utils.load_model_ensemble(
+                args.path.split(':'),
+                arg_overrides=eval(args.model_overrides),
+                task=task,
+            )
+            break
+        except Exception as e:
+            # many kinds of exceptions can happen, EOFError, FileNotFoundError, OSError, RuntimeError, etc.
+            # so we're trying to be general here
+            if n_tries == MAX_RELOAD_TRIES - 1:
+                raise e
+            
+            print(f'Unable to load {str(args.path.split(":"))!r} on {n_tries} try. Retrying...')
+            sleep(WAIT_BETWEEN_RELOAD_TRIES)
+            n_tries += 1
 
-    models, _model_args = checkpoint_utils.load_model_ensemble(
-        args.path.split(':'),
-        arg_overrides=eval(args.model_overrides),
-        task=task,
-    )
+    # models, _model_args = checkpoint_utils.load_model_ensemble(
+    #     args.path.split(':'),
+    #     arg_overrides=eval(args.model_overrides),
+    #     task=task,
+    # )
 
     # Optimize ensemble for generation
     for model in models:
@@ -66,7 +93,18 @@ def main(args):
                 continue
 
             prefix_tokens = None
-            hypos = task.inference_step(generator, models, sample, prefix_tokens)
+            
+            # handle some weird AssertionErrors that particular random seeds cause for particular architectures+hyperparams.
+            # for now, just skip them and it'll be taken into account in the %s. 
+            # appears to be due to nans, related to the older version of fairseq this repo uses.
+            # see https://github.com/facebookresearch/fairseq/issues/2087
+            try:
+                hypos = task.inference_step(generator, models, sample, prefix_tokens)
+            except AssertionError as e:
+                print(e)
+                print('AssertionError was raised. Skipping this sample for this seed.')
+                continue
+                
             num_generated_tokens = sum(len(h[0]['tokens']) for h in hypos)
 
             for i, sample_id in enumerate(sample['id'].tolist()):
@@ -95,7 +133,14 @@ def main(args):
                 out_file.write('\n')
                 
                 print(result_line)
-
+    
+    # remove unneeded checkpoints
+    # checkpoints = glob(f'{output_dir}/*.pt')
+    # for file in checkpoints:
+    #    try:
+    #        os.remove(file)
+    #    except Exception:
+    #        pass
 
 
 def cli_main(args):

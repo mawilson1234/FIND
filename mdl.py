@@ -21,6 +21,13 @@ from fairseq.trainer import Trainer
 from fairseq.criterions import CRITERION_REGISTRY
 from fairseq.meters import AverageMeter
 
+from time import sleep
+
+# there are some timing issues when loading the initial checkpoint
+# we'll allow up to 10 retries before exiting
+MAX_RELOAD_TRIES = 10
+WAIT_BETWEEN_RELOAD_TRIES = 120/MAX_RELOAD_TRIES # wait up to 2 minutes total
+
 def get_training_stats(trainer):
     stats = collections.OrderedDict()
     stats['loss'] = trainer.get_meter('train_loss')
@@ -85,7 +92,22 @@ def main(args, init_distributed=False):
     block_cross_entropys = []
 
     for step in range(steps):
-        trainer.load_checkpoint(initial_state_checkpoint, reset_optimizer=True, reset_lr_scheduler=True)
+        n_tries = 0
+        while n_tries < MAX_RELOAD_TRIES:
+            try:
+                trainer.load_checkpoint(initial_state_checkpoint, reset_optimizer=True, reset_lr_scheduler=True)
+                break
+            except Exception as e:
+                # many kinds of exceptions can happen, EOFError, FileNotFoundError, OSError, etc.
+                # so we're trying to be general here
+                if n_tries == MAX_RELOAD_TRIES - 1:
+                    raise e
+                
+                print(f'Unable to load {initial_state_checkpoint!r} on {n_tries} try. Retrying...')
+                sleep(WAIT_BETWEEN_RELOAD_TRIES)
+                n_tries += 1        
+        
+        #trainer.load_checkpoint(initial_state_checkpoint, reset_optimizer=True, reset_lr_scheduler=True)
 
         epoch_itr = trainer.get_train_iterator(epoch=step, load_dataset=False)
 

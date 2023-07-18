@@ -1,0 +1,12 @@
+A 4
+B 4
+C 4
+D 4
+E 4
+madeupword0000 0
+madeupword0001 0
+madeupword0002 0
+madeupword0003 0
+madeupword0004 0
+madeupword0005 0
+madeupword0006 0

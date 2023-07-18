@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-task=v100:2
 #SBATCH --partition=gpu
-#SBATCH --time=04:00:00
+#SBATCH --time=06:00:00
 #SBATCH --mail-type=END,FAIL,INVALID_DEPEND
 
 module unload Python

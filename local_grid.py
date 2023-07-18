@@ -10,10 +10,11 @@ from generate import cli_main as generate_main
 from concurrent.futures import ProcessPoolExecutor, wait
 import itertools
 import json
-import time
+import datetime
 import subprocess
 import os
 import torch
+
 
 class ConcurrentWrapper:
     def __init__(self, runnable, log_dir, job_id):
@@ -99,7 +100,7 @@ if __name__ == '__main__':
     print(data_path)
     assert data_path.exists()
 
-    args.root_dir = pathlib.PosixPath('./results') / args.name / time.strftime("%Y_%m_%d_%H_%M_%S")
+    args.root_dir = pathlib.PosixPath('./results') / args.name / datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S.%f")
     args.root_dir.mkdir(parents=True)
 
     hyper_grid = sweep(args.sweep)
@@ -113,7 +114,7 @@ if __name__ == '__main__':
 
             train_params = [str(data_path), f'--save-dir={str(path)}', 
                             '--disable-validation', '--no-epoch-checkpoints', '--sentence-avg'] + combo
-            breakpoint()
+            
             with open(path / 'params', 'w') as f:
                 json.dump(dict(train_params=train_params), f)
 
@@ -127,5 +128,15 @@ if __name__ == '__main__':
             jobs_array.append(job)
 
     wait(jobs_array)
+    
+    # remove unneeded checkpoints to save space
+    checkpoints = sorted(args.root_dir.glob('**/*.pt'))
+    for checkpoint in checkpoints:
+        try: 
+            os.remove(checkpoint)
+        except Exception as e:
+            print(e)
+            print(f'Unable to remove checkpoint {checkpoint}. Skipping.')
+    
     print(f'Results are in {args.root_dir}')
     print(f'Check all of them: `cat {args.root_dir}/?/stdout | less`')

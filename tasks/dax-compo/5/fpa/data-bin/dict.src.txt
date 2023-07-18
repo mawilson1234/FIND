@@ -1,0 +1,12 @@
+a 2
+F 1
+b 1
+c 1
+d 1
+e 1
+madeupword0000 0
+madeupword0001 0
+madeupword0002 0
+madeupword0003 0
+madeupword0004 0
+madeupword0005 0
