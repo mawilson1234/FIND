@@ -116,10 +116,13 @@ def main(args, init_distributed=False):
         # if mdl-batch-size is set, we sample batches with replacement,
         # otherwise, each batch contains all allowed_examples
         if batch_size:
-            batches = tuple([random.choices(allowed_examples, k=batch_size) for _ in range(batches_per_epoch)])
+        #     batches = tuple([random.choices(allowed_examples, k=batch_size) for _ in range(batches_per_epoch)])
+            batches = []
+            for _ in range(batches_per_epoch):
+                batches.extend([allowed_examples[i:i + batch_size] for i in range(0, len(allowed_examples), batch_size)])
         else:
             batches = tuple([allowed_examples for _ in range(batches_per_epoch)])
-
+        
         epoch_itr.frozen_batches = batches
 
         train(args, trainer, task, epoch_itr)
