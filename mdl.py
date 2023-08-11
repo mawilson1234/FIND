@@ -75,7 +75,8 @@ def main(args, init_distributed=False):
     epochs = args.mdl_epochs
     batch_size = args.mdl_batch_size
     block_size = args.mdl_block_size
-    
+    batches_per_epoch = args.mdl_batches_per_epoch
+
     epoch_itr = trainer.get_train_iterator(epoch=0, load_dataset=True)
 
     examples = list(range(len(epoch_itr.dataset)))
@@ -115,13 +116,19 @@ def main(args, init_distributed=False):
 
         allowed_examples += blocks[step]
 
-        # if mdl-batch-size is set, we sample batches with replacement,
-        # otherwise, each batch contains all allowed_examples
         if batch_size:
         #     batches = tuple([random.choices(allowed_examples, k=batch_size) for _ in range(epochs)])
             batches = []
             for _ in range(epochs):
                 batches.extend([allowed_examples[i:i + batch_size] for i in range(0, len(allowed_examples), batch_size)])
+            
+            # if mdl-batches-per-epoch is set, we sample batches with replacement,
+            # otherwise, each batch contains all allowed_examples
+            if batches_per_epoch is not None:
+                modified_batches = []
+                for _ in range(epochs):
+                    modified_batches.extend(random.choices(batches, k=batches_per_epoch))
+                batches = modified_batches
         else:
             batches = tuple([allowed_examples for _ in range(epochs)])
         
@@ -246,6 +253,8 @@ def cli_main(args):
                 "for each update of the learner. If not specified, all examples available at the step are used.")
     parser.add_argument("--mdl-train-examples", type=int, default=0,
             help="First `mdl-train-examples`  lines in the training dataset are considered as initial training data (see README).")
+    parser.add_argument("--mdl-batches-per-epoch", type=int, default=None,
+                        help="How many batches to sample for an epoch. Default is all.")
     args = options.parse_args_and_arch(parser, input_args=args)
 
     assert torch.cuda.is_available()
