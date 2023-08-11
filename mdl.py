@@ -72,7 +72,7 @@ def main(args, init_distributed=False):
     initial_state_checkpoint = str(pathlib.Path(args.save_dir) / 'initial.pt')
     trainer.save_checkpoint(initial_state_checkpoint, {'epoch': 0})
 
-    batches_per_epoch = args.mdl_batches_per_epoch
+    epochs = args.mdl_epochs
     batch_size = args.mdl_batch_size
     block_size = args.mdl_block_size
     
@@ -116,12 +116,12 @@ def main(args, init_distributed=False):
         # if mdl-batch-size is set, we sample batches with replacement,
         # otherwise, each batch contains all allowed_examples
         if batch_size:
-        #     batches = tuple([random.choices(allowed_examples, k=batch_size) for _ in range(batches_per_epoch)])
+        #     batches = tuple([random.choices(allowed_examples, k=batch_size) for _ in range(epochs)])
             batches = []
-            for _ in range(batches_per_epoch):
+            for _ in range(epochs):
                 batches.extend([allowed_examples[i:i + batch_size] for i in range(0, len(allowed_examples), batch_size)])
         else:
-            batches = tuple([allowed_examples for _ in range(batches_per_epoch)])
+            batches = tuple([allowed_examples for _ in range(epochs)])
         
         epoch_itr.frozen_batches = batches
 
@@ -168,7 +168,7 @@ def train(args, trainer, task, epoch_itr):
 
     itr = iterators.GroupedIterator(itr, update_freq)
     progress = progress_bar.build_progress_bar(
-        args, itr, epoch_itr.epoch, no_progress_bar='simple',
+        args, itr, no_progress_bar='simple',
     )
 
     for i, samples in enumerate(progress, start=epoch_itr.iterations_in_epoch):
@@ -215,7 +215,7 @@ def validate(args, trainer, task, epoch_itr, subsets, allowed_batches):
 
     itr = valid_epoch_itr.next_epoch_itr(shuffle=False)
     progress = progress_bar.build_progress_bar(
-        args, itr, epoch_itr.epoch,
+        args, itr, valid_epoch_itr.epoch,
         prefix='next block validation',
         no_progress_bar='simple'
     )
@@ -239,7 +239,7 @@ def cli_main(args):
     parser = options.get_training_parser()
     parser.add_argument("--mdl-block-size", type=int, default=1, 
         help="Size of the transmitted block. Used when calculating description length")
-    parser.add_argument("--mdl-batches-per-epoch", type=int, default=3000, help="Number of updates in per training")
+    parser.add_argument("--mdl-epochs", type=int, default=3000, help="Number of updates in per training")
     parser.add_argument("--mdl-batch-size", type=int, default=None, help="If set, specifies the number of examples sampled (with replacement) "
                 "for each update of the learner. If not specified, all examples available at the step are used.")
     parser.add_argument("--mdl-train-examples", type=int, default=None, required=True, 

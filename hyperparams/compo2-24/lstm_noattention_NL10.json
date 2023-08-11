@@ -13,7 +13,7 @@
     "warmup-init-lr": [1e-5],
     "min-lr": [1e-9],
     "warmup-updates" : [1000],
-    "mdl-batches-per-epoch": [3000],
+    "mdl-epochs": [3000],
     "mdl-train-examples": [124],
     "mdl-block-size": [124],
     "optimizer": ["adam"],
