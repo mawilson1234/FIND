@@ -123,6 +123,10 @@ def main(args, init_distributed=False):
         else:
             batches = tuple([allowed_examples for _ in range(epochs)])
         
+        for batch in batches:
+            print(len(batch))
+
+        print(sum(len(batch) for batch in batches))
         epoch_itr.frozen_batches = batches
 
         train(args, trainer, task, epoch_itr)

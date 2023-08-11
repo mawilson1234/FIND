@@ -4,10 +4,10 @@
     "encoder-attention-heads": [8],
      "encoder-embed-dim": [16],
     "encoder-ffn-embed-dim": [512],
-    "encoder-layers": [2],
+    "encoder-layers": [1],
     "decoder-embed-dim": [16],
     "decoder-ffn-embed-dim": [512],
-    "decoder-layers":  [2],
+    "decoder-layers":  [1],
     "lr": [1e-3],
     "dropout": [0.5],
     "lr-scheduler": ["inverse_sqrt"],
@@ -15,8 +15,7 @@
     "min-lr": [1e-9],
     "warmup-updates" : [1000],
     "mdl-epochs": [3000],
-    "mdl-train-examples": [136],
-    "mdl-block-size": [136],
+    "mdl-batch-size": [32],
     "optimizer": ["adam"],
-    "seed": [2,3,4,5]
+    "seed": [1,2,3,4,5]
 }
