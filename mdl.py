@@ -79,10 +79,12 @@ def main(args, init_distributed=False):
     epoch_itr = trainer.get_train_iterator(epoch=0, load_dataset=True)
 
     examples = list(range(len(epoch_itr.dataset)))
-
+    if args.mdl_train_examples == 0:
+        args.mdl_train_examples = len(examples)
+    
     train_examples = examples[:args.mdl_train_examples]
     test_examples = examples[args.mdl_train_examples:]
-
+    
     random.shuffle(test_examples)
     blocks =  [train_examples]
     blocks += [test_examples[i:i + block_size] for i in range(0, len(test_examples), block_size)]
@@ -123,10 +125,6 @@ def main(args, init_distributed=False):
         else:
             batches = tuple([allowed_examples for _ in range(epochs)])
         
-        for batch in batches:
-            print(len(batch))
-
-        print(sum(len(batch) for batch in batches))
         epoch_itr.frozen_batches = batches
 
         train(args, trainer, task, epoch_itr)
@@ -246,12 +244,12 @@ def cli_main(args):
     parser.add_argument("--mdl-epochs", type=int, default=3000, help="Number of updates in per training")
     parser.add_argument("--mdl-batch-size", type=int, default=None, help="If set, specifies the number of examples sampled (with replacement) "
                 "for each update of the learner. If not specified, all examples available at the step are used.")
-    parser.add_argument("--mdl-train-examples", type=int, default=None, required=True, 
+    parser.add_argument("--mdl-train-examples", type=int, default=0,
             help="First `mdl-train-examples`  lines in the training dataset are considered as initial training data (see README).")
     args = options.parse_args_and_arch(parser, input_args=args)
 
     assert torch.cuda.is_available()
-    assert args.mdl_train_examples
+    # assert args.mdl_train_examples
 
     if not args.sentence_avg:
         print('Overriding --sentence-avg', file=sys.stderr)
