@@ -14,9 +14,9 @@
     "warmup-init-lr": [1e-5],
     "min-lr": [1e-9],
     "warmup-updates" : [1000],
-    "mdl-epochs": [3000],
+    "mdl-epochs": [1000],
     "mdl-batch-size": [256],
 	"mdl-batches-per-epoch": [1000],
     "optimizer": ["adam"],
-    "seed": [1,2,3,4,5]
+    "seed": [1]
 }
