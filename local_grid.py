@@ -72,9 +72,15 @@ def combined_run(params):
     train_main(params)
 
     checkpoint_path = "--path=" + params[1].split('=')[1] + "/0.pt"
-    generate_params = [params[0].strip(), checkpoint_path, '--beam=1', 
-                '--batch-size=128', '--gen-subset=test']
-    generate_main(generate_params)
+    # check accuracy on the training set
+    generate_train_params = [params[0].strip(), checkpoint_path, '--beam=1',
+                             '--batch-size=128', '--gen-subset=train']
+    generate_main(generate_train_params)
+    
+    # check accuracy on the test set
+    generate_test_params = [params[0].strip(), checkpoint_path, '--beam=1', 
+                            '--batch-size=128', '--gen-subset=test']
+    generate_main(generate_test_params)
 
 if __name__ == '__main__':
     import pathlib

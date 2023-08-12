@@ -26,7 +26,6 @@ def main(args):
 
     utils.import_user_module(args)
 
-
     # Load dataset splits
     task = tasks.setup_task(args)
     task.load_dataset(args.gen_subset)
@@ -86,7 +85,7 @@ def main(args):
     
     output_dir = os.path.dirname(args.path)
     with progress_bar.build_progress_bar(args, itr) as t, \
-         open(f'{output_dir}/generated.json', 'wt', encoding='utf8') as out_file:
+         open(f'{output_dir}/generated-{args.gen_subset}.json', 'wt', encoding='utf8') as out_file:
         for sample in t:
             sample = utils.move_to_cuda(sample)
             if 'net_input' not in sample:
