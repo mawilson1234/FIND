@@ -181,7 +181,7 @@ def SCAN_generator(
 			while '  ' in target:
 				target = target.replace('  ', ' ')
 			
-			source = ' '.join(source.leaves())
+			source = ' '.join(source.leaves()).strip()
 			yield {'IN': source, 'OUT': target}
 
 def save_SCAN(
@@ -201,7 +201,7 @@ def save_SCAN(
 			source = split['filter'](tree)
 			if source:
 				target = ' '.join(denotation(source)).strip()
-				source = ' '.join(source.leaves())
+				source = ' '.join(source.leaves()).strip()
 				while '  ' in target:
 					target = target.replace('  ', ' ')
 				
