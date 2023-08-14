@@ -1,3 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
-
-python generate_data.py --split=addtwicethrice_jump --shuffle-train
+for SPLIT in addprim_jump # addtwicethrice_jump
+do
+	python generate_data.py --split="${SPLIT}" --shuffle-train
+done

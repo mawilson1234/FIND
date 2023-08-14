@@ -177,7 +177,7 @@ def SCAN_generator(
 	for tree in trees(scan_grammar):
 		source = filter(tree)
 		if source:
-			target = ' '.join(denotation(source))
+			target = ' '.join(denotation(source)).strip()
 			while '  ' in target:
 				target = target.replace('  ', ' ')
 			
@@ -200,7 +200,7 @@ def save_SCAN(
 		for split in splits:
 			source = split['filter'](tree)
 			if source:
-				target = ' '.join(denotation(source))
+				target = ' '.join(denotation(source)).strip()
 				source = ' '.join(source.leaves())
 				while '  ' in target:
 					target = target.replace('  ', ' ')
@@ -222,6 +222,24 @@ def save_SCAN(
 				_ = out_file.write(line)
 		
 		os.remove(os.path.join(save_dir, f'tasks_{split["name"]}.txt'))
+
+def train_addprim_jump(source: Tree) -> Tree:
+	'''
+	Returns source if (i) jump is not in source or (ii) only jump is in source.
+	Else, returns a tree with just 'jump'
+	'''
+	if source.leaves() == ['jump'] or ['jump'] not in source.leaves():
+		return source
+	
+	return Tree(U, ['jump'])
+
+def test_addprim_jump(source: Tree) -> Tree:
+	'''
+	Returns source if (i) jump is in source and (ii) jump is not all in source.
+	Else, returns None
+	'''
+	if 'jump' in source.leaves() and not source.leaves() == ['jump']:
+		return source
 
 def train_addtwicethrice_jump(source: Tree) -> Tree:
 	'''

@@ -18,6 +18,10 @@ SPLITS = {
 		'train': train_addtwicethrice_jump,
 		'test': test_addtwicethrice_jump,
 	},
+    'addprim_jump': {
+        'train': train_addprim_jump,
+        'test': test_addprim_jump,
+    }
 }
 
 def put_train_fpa(root: str, split: str, shuffle: bool = False) -> None:
