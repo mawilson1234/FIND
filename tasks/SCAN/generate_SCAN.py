@@ -228,7 +228,7 @@ def train_addprim_jump(source: Tree) -> Tree:
 	Returns source if (i) jump is not in source or (ii) only jump is in source.
 	Else, returns a tree with just 'jump'
 	'''
-	if source.leaves() == ['jump'] or ['jump'] not in source.leaves():
+	if source.leaves() == ['jump'] or 'jump' not in source.leaves():
 		return source
 	
 	return Tree(U, ['jump'])
