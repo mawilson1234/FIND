@@ -190,11 +190,12 @@ def read_SCAN_from_file(
 	'''
 	Reads an existing SCAN split from a file, and yields it parsed.
 	'''
-	for line in file_loader():
-		yield dict(zip(
-			('IN', 'OUT'), 
-			re.sub('^IN: ', '', line.strip()).split(' OUT: ')
-		))
+	with file_loader() as file:
+		for line in file:
+			yield dict(zip(
+				('IN', 'OUT'), 
+				re.sub('^IN: ', '', line.strip()).split(' OUT: ')
+			))
 
 def save_SCAN(
 	save_dir: str = '', 
