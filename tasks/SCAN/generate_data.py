@@ -18,10 +18,15 @@ SPLITS = {
 		'train': train_addtwicethrice_jump,
 		'test': test_addtwicethrice_jump,
 	},
-    'addprim_jump': {
-        'train': train_addprim_jump,
-        'test': test_addprim_jump,
-    }
+	'addprim_jump': {
+		'train': train_addprim_jump,
+		'test': test_addprim_jump,
+	},
+	'addprim_jump_original': {
+		'_generator': read_SCAN_from_file,
+		'train': train_addprim_jump_original,
+		'test': test_addprim_jump_original,
+	},
 }
 
 def put_train_fpa(root: str, split: str, shuffle: bool = False) -> None:
@@ -31,12 +36,13 @@ def put_train_fpa(root: str, split: str, shuffle: bool = False) -> None:
 	:param split (str): identifies the functions to use for saving train data in SPLITS.
 	:param shuffle (bool): whether to shuffle the dataset after generating it.
 	'''
+	generator = SPLITS.get(split, {}).get('_generator', SCAN_generator)
 	filter_function = SPLITS.get(split, {}).get('train', lambda x: x)
 	
 	sources = []
 	targets = []
 	print('Generating train examples.')
-	for example in tqdm(SCAN_generator(filter=filter_function)):
+	for example in tqdm(generator(filter_function)):
 		sources.append(example['IN'])
 		targets.append(example['OUT'])
 	
@@ -58,12 +64,13 @@ def put_test(root: str, split: str):
 	:param root (str): the directory to save the data to to.
 	:param split (str): identifies the function to use for saving test data in SPLITS.
 	'''
+	generator = SPLITS.get(split, {}).get('_generator', SCAN_generator)
 	filter_function = SPLITS.get(split, {}).get('test', lambda x: x)
 	
 	print('Generating test examples.')
 	with open(os.path.join(f'{root}', 'test.src'), 'wt') as test_src, \
 		 open(os.path.join(f'{root}', 'test.dst'), 'wt') as test_tgt:
-		for example in tqdm(SCAN_generator(filter=filter_function)):
+		for example in tqdm(generator(filter_function)):
 			print(example['IN'], file=test_src)
 			print(example['OUT'], file=test_tgt) # used for eval
 	

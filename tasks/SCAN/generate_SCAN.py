@@ -169,7 +169,7 @@ def denotation(tree: Tree) -> str:
 
 def SCAN_generator(
 	filter: Callable = lambda source: source,
-) -> None:
+) -> Dict[str,str]:
 	'''
 	Generates input-output pairs from the grammar matching
 	a filter.
@@ -183,6 +183,18 @@ def SCAN_generator(
 			
 			source = ' '.join(source.leaves())
 			yield {'IN': source, 'OUT': target}
+
+def read_SCAN_from_file(
+	file_loader: Callable = None,
+) -> Dict[str,str]:
+	'''
+	Reads an existing SCAN split from a file, and yields it parsed.
+	'''
+	for line in file_loader():
+		yield dict(zip(
+			('IN', 'OUT'), 
+			re.sub('^IN: ', '', line.strip()).split(' OUT: ')
+		))
 
 def save_SCAN(
 	save_dir: str = '', 
@@ -240,6 +252,20 @@ def test_addprim_jump(source: Tree) -> Tree:
 	'''
 	if 'jump' in source.leaves() and not source.leaves() == ['jump']:
 		return source
+
+def train_addprim_jump_original():
+	'''
+	Returns a file handle for the existing training split
+	of SCAN's addprim jump task.
+	'''
+	return gzip.open(os.path.join('_original_splits', 'addprim', 'tasks_train_addprim_jump.txt.gz'), 'rt')
+
+def test_addprim_jump_original():
+	'''
+	Returns a file handle for the existing training split
+	of SCAN's addprim jump task.
+	'''
+	return gzip.open(os.path.join('_original_splits', 'addprim', 'tasks_test_addprim_jump.txt.gz'), 'rt')
 
 def train_addtwicethrice_jump(source: Tree) -> Tree:
 	'''
