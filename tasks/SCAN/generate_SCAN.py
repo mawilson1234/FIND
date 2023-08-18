@@ -130,7 +130,6 @@ def denotation(tree: Tree) -> str:
 	'''
 	Convert a tree to its SCAN denotation (i.e., the corresponding output string).
 	'''
-	
 	labels = get_labels(tree)
 	if all(label in TERMINAL_DENOTATIONS for label in labels):
 		return [TERMINAL_DENOTATIONS[label] for label in labels]
@@ -164,7 +163,6 @@ def denotation(tree: Tree) -> str:
 	if len(labels) == 1:
 		return denotation(tree[0])
 	
-	breakpoint()
 	raise ValueError(f'Unable to determine a parse for {labels!r}.')
 
 def SCAN_generator(
