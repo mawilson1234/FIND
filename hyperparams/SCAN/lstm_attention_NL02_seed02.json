@@ -1,0 +1,21 @@
+{
+    "arch": ["lstm"],
+    "decoder-attention": [1],
+    "encoder-embed-dim": [32],
+    "encoder-hidden-size": [200],
+    "encoder-layers": [2],
+    "decoder-embed-dim": [32],
+    "decoder-hidden-size": [200],
+    "decoder-layers":  [2],
+    "lr": [1e-3],
+    "dropout": [0.5],
+    "lr-scheduler": ["inverse_sqrt"],
+    "warmup-init-lr": [1e-5],
+    "min-lr": [1e-9],
+    "warmup-updates" : [1000],
+    "mdl-epochs": [500],
+    "mdl-batch-size": [16],
+	"mdl-batches-per-epoch": [1000],
+    "optimizer": ["adam"],
+    "seed": [2]
+}

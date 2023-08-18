@@ -1,0 +1,19 @@
+{
+    "arch": ["fconv"],
+    "decoder-attention": ["[True]"],
+    "encoder-embed-dim": [128],
+    "encoder-layers": ["[(512,8),(512,8),(512,8),(512,8),(512,8)]"],
+    "decoder-embed-dim": [128],
+    "decoder-layers": ["[(512,8)]"],
+    "lr": [1e-3],
+    "dropout": [0.5],
+    "lr-scheduler": ["inverse_sqrt"],
+    "warmup-init-lr": [1e-5],
+    "min-lr": [1e-9],
+    "warmup-updates" : [1000],
+    "mdl-epochs": [500],
+    "mdl-batch-size": [16],
+	"mdl-batches-per-epoch": [1000],
+    "optimizer": ["adam"],
+    "seed": [2]
+}

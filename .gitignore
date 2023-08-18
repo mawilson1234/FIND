@@ -2,3 +2,5 @@ joblogs/
 __pycache__/
 results/
 results
+scripts/*.txt
+scripts/*/*.txt
