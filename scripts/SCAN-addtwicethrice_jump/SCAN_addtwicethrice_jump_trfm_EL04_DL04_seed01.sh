@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-task=1
 #SBATCH --partition=gpu
-#SBATCH --time=14:00:00
+#SBATCH --time=01-00:00:00
 #SBATCH --mem=20GB
 #SBATCH --mail-type=END,FAIL,INVALID_DEPEND
 
