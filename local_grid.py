@@ -105,9 +105,17 @@ if __name__ == '__main__':
     data_path = pathlib.Path(__file__).parent.absolute() / args.task / 'data-bin'
     print(data_path)
     assert data_path.exists()
-
-    args.root_dir = pathlib.PosixPath('./results') / args.name / datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S.%f")
-    args.root_dir.mkdir(parents=True)
+    
+    # this will account for what to do if we happen to start at the same microsecond
+    # while exceedingly unlikely, this has actually happened a few times
+    while True:
+        try:
+            args.root_dir = pathlib.PosixPath('./results') / args.name / datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S.%f")
+            args.root_dir.mkdir(parents=True)
+        except FileExistsError:
+            pass
+        else:
+            break
 
     hyper_grid = sweep(args.sweep)
 
