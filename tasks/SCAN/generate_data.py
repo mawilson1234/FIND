@@ -27,7 +27,7 @@ SPLITS = {
 		'train': train_addprim_jump_original,
 		'test': test_addprim_jump_original,
 	},
-	'simple': {
+	'simple_original': {
 		'_generator': read_SCAN_from_file,
 		'train': train_simple_original,
 		'test': test_simple_original,
