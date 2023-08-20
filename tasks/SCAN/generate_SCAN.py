@@ -294,6 +294,20 @@ def test_addtwicethrice_jump(source: Tree) -> Tree:
 	
 	return ''
 
+def train_simple_original():
+	'''
+	Returns a file handle for the existing training split
+	of SCAN's simple task.
+	'''
+	return gzip.open(os.path.join('_original_splits', 'simple', 'tasks_train_simple.txt.gz'), 'rt')
+
+def test_simple_original():
+	'''
+	Returns a file handle for the existing training split
+	of SCAN's simple task.
+	'''
+	return gzip.open(os.path.join('_original_splits', 'addprim', 'tasks_test_simple.txt.gz'), 'rt')
+
 if __name__ == '__main__':
 	# demo
 	# splits = [

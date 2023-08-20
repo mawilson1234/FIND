@@ -27,6 +27,11 @@ SPLITS = {
 		'train': train_addprim_jump_original,
 		'test': test_addprim_jump_original,
 	},
+	'simple': {
+		'_generator': read_SCAN_from_file,
+		'train': train_simple_original,
+		'test': test_simple_original,
+	}
 }
 
 def put_train_fpa(root: str, split: str, shuffle: bool = False) -> None:
