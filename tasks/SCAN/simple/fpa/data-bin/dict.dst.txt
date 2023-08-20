@@ -1,0 +1,12 @@
+I_TURN_RIGHT 68992
+I_TURN_LEFT 68602
+I_JUMP 25862
+I_RUN 25452
+I_WALK 25444
+I_LOOK 25416
+madeupword0000 0
+madeupword0001 0
+madeupword0002 0
+madeupword0003 0
+madeupword0004 0
+madeupword0005 0
