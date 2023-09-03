@@ -62,7 +62,7 @@ def main(args, init_distributed=False):
 
     # Setup task, (should be default, translation)
     task = tasks.setup_task(args)
-
+    
     # Build model and criterion
     model = task.build_model(args)
     criterion = task.build_criterion(args)
