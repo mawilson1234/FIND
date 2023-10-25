@@ -1,6 +1,6 @@
 # Description
 
-This repository contains code for reproducing the main experiments of _What they do when in doubt: a study of inductive biases in seq2seq learners_, Eugene Kharitonov<sup>+</sup> and Rahma Chaabouni<sup>+</sup>. ICLR 2021. [[openreview]](https://openreview.net/forum?id=YmA86Zo-P_t) [[arxiv]](https://arxiv.org/abs/2006.14953).
+This repository contains our fork of the code for reproducing the main experiments of _What they do when in doubt: a study of inductive biases in seq2seq learners_, Eugene Kharitonov<sup>+</sup> and Rahma Chaabouni<sup>+</sup>. ICLR 2021. [[openreview]](https://openreview.net/forum?id=YmA86Zo-P_t) [[arxiv]](https://arxiv.org/abs/2006.14953). To conduct our experiments, we have added new datasets to the data directory, and have added config files for the SCAN task (which we were unable to find in the original repo). We have also made small modifications to other parts of the codebase to facilitate running it on our setup, but these didn't affect the main logic of the experiments. What follows is from the readme from Kharitonov & Chaabouni's original repo.
 
 Armed with the poverty of stimulus principle, we examine inductive biases of standard seq2seq learners. Most notably, we find that LSTM-based learners have strong inductive biases towards arithmetic operations, such as counting, addition, and multiplication by a constant. Similarly, Transformer-based learners are biased for hierarchical reasoning. 
 
